@@ -45,15 +45,23 @@ METHOD(vpnservice_builder_t, add_address, bool,
 	JNIEnv *env;
 	jmethodID method_id;
 	jstring str;
-	char buf[INET_ADDRSTRLEN];
+	char buf[INET6_ADDRSTRLEN];
+	int prefixlen;
 
 	androidjni_attach_thread(&env);
 
 	DBG2(DBG_LIB, "builder: adding interface address %H", addr);
 
-	if (addr->get_family(addr) != AF_INET)
+	switch (addr->get_family(addr))
 	{
-		goto failed;
+		case AF_INET:
+			prefixlen = 32;
+			break;
+		case AF_INET6:
+			prefixlen = 128;
+			break;
+		default:
+			goto failed;
 	}
 	if (snprintf(buf, sizeof(buf), "%H", addr) >= sizeof(buf))
 	{
@@ -71,7 +79,7 @@ METHOD(vpnservice_builder_t, add_address, bool,
 	{
 		goto failed;
 	}
-	if (!(*env)->CallBooleanMethod(env, this->builder, method_id, str, 32))
+	if (!(*env)->CallBooleanMethod(env, this->builder, method_id, str, prefixlen))
 	{
 		goto failed;
 	}
@@ -121,13 +129,14 @@ METHOD(vpnservice_builder_t, add_route, bool,
 	JNIEnv *env;
 	jmethodID method_id;
 	jstring str;
-	char buf[INET_ADDRSTRLEN];
+	char buf[INET6_ADDRSTRLEN];
 
 	androidjni_attach_thread(&env);
 
 	DBG2(DBG_LIB, "builder: adding route %+H/%d", net, prefix);
 
-	if (net->get_family(net) != AF_INET)
+	if (net->get_family(net) != AF_INET &&
+	    net->get_family(net) != AF_INET6)
 	{
 		goto failed;
 	}

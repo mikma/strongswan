@@ -66,6 +66,8 @@ public class VpnProfileDetailActivity extends Activity
 	private EditText mName;
 	private EditText mGateway;
 	private Spinner mSelectVpnType;
+	private Spinner mSelectTunFamily;
+	private String[] mArrayTunFamily;
 	private ViewGroup mUsernamePassword;
 	private EditText mUsername;
 	private EditText mPassword;
@@ -90,6 +92,8 @@ public class VpnProfileDetailActivity extends Activity
 		mName = (EditText)findViewById(R.id.name);
 		mGateway = (EditText)findViewById(R.id.gateway);
 		mSelectVpnType = (Spinner)findViewById(R.id.vpn_type);
+		mSelectTunFamily = (Spinner)findViewById(R.id.tun_family);
+		mArrayTunFamily = getResources().getStringArray(R.array.tun_family_values);
 
 		mUsernamePassword = (ViewGroup)findViewById(R.id.username_password_group);
 		mUsername = (EditText)findViewById(R.id.username);
@@ -360,9 +364,11 @@ public class VpnProfileDetailActivity extends Activity
 		/* the name is optional, we default to the gateway if none is given */
 		String name = mName.getText().toString().trim();
 		String gateway = mGateway.getText().toString().trim();
+		String tun_family = mArrayTunFamily[mSelectTunFamily.getSelectedItemPosition()];
 		mProfile.setName(name.isEmpty() ? gateway : name);
 		mProfile.setGateway(gateway);
 		mProfile.setVpnType(mVpnType);
+		mProfile.setTunFamily(tun_family);
 		if (mVpnType.getRequiresUsernamePassword())
 		{
 			mProfile.setUsername(mUsername.getText().toString().trim());
@@ -378,6 +384,20 @@ public class VpnProfileDetailActivity extends Activity
 		mProfile.setCertificateAlias(certAlias);
 	}
 
+	private int getTunFamilyIndex(String tunFamily, int defaultValue)
+	{
+		if (tunFamily == null)
+			return defaultValue;
+
+		for (int i=0; i < mArrayTunFamily.length; i++)
+		{
+			if (mArrayTunFamily[i].equals(tunFamily))
+				return i;
+		}
+
+		return defaultValue;
+	}
+
 	/**
 	 * Load an existing profile if we got an ID
 	 *
@@ -386,6 +406,7 @@ public class VpnProfileDetailActivity extends Activity
 	private void loadProfileData(Bundle savedInstanceState)
 	{
 		String useralias = null, alias = null;
+		String tunFamily = VpnProfileDataSource.DEFAULT_TUN_FAMILY;
 
 		getActionBar().setTitle(R.string.add_profile);
 		if (mId != null && mId != 0)
@@ -396,6 +417,7 @@ public class VpnProfileDetailActivity extends Activity
 				mName.setText(mProfile.getName());
 				mGateway.setText(mProfile.getGateway());
 				mVpnType = mProfile.getVpnType();
+				tunFamily = mProfile.getTunFamily();
 				mUsername.setText(mProfile.getUsername());
 				mPassword.setText(mProfile.getPassword());
 				useralias = mProfile.getUserCertificateAlias();
@@ -411,6 +433,7 @@ public class VpnProfileDetailActivity extends Activity
 		}
 
 		mSelectVpnType.setSelection(mVpnType.ordinal());
+		mSelectTunFamily.setSelection(getTunFamilyIndex(tunFamily, 0));
 
 		/* check if the user selected a user certificate previously */
 		useralias = savedInstanceState == null ? useralias: savedInstanceState.getString(VpnProfileDataSource.KEY_USER_CERTIFICATE);

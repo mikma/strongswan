@@ -215,6 +215,7 @@ public class CharonVpnService extends VpnService implements Runnable
 						Log.i(TAG, "charon started");
 
 						initiate(mCurrentProfile.getVpnType().getIdentifier(),
+							 mCurrentProfile.getTunFamily(),
 								 mCurrentProfile.getGateway(), mCurrentProfile.getUsername(),
 								 mCurrentProfile.getPassword());
 					}
@@ -472,7 +473,7 @@ public class CharonVpnService extends VpnService implements Runnable
 	/**
 	 * Initiate VPN, provided by libandroidbridge.so
 	 */
-	public native void initiate(String type, String gateway, String username, String password);
+	public native void initiate(String type, String tunFamily, String gateway, String username, String password);
 
 	/**
 	 * Adapter for VpnService.Builder which is used to access it safely via JNI.

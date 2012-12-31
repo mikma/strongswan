@@ -57,7 +57,7 @@ struct android_service_t {
  * @param username				user name (local identity)
  * @param password				password (if any)
  */
-android_service_t *android_service_create(android_creds_t *creds, char *type,
+android_service_t *android_service_create(android_creds_t *creds, char *type, char *tun_family,
 										  char *gateway, char *username,
 										  char *password);
 

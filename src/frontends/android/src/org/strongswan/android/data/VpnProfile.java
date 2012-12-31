@@ -21,6 +21,7 @@ public class VpnProfile implements Cloneable
 {
 	private String mName, mGateway, mUsername, mPassword, mCertificate, mUserCertificate;
 	private VpnType mVpnType;
+	private String mTunFamily;
 	private long mId = -1;
 
 	public long getId()
@@ -61,6 +62,16 @@ public class VpnProfile implements Cloneable
 	public void setVpnType(VpnType type)
 	{
 		this.mVpnType = type;
+	}
+
+	public String getTunFamily()
+	{
+		return mTunFamily;
+	}
+
+	public void setTunFamily(String tunFamily)
+	{
+		this.mTunFamily = tunFamily;
 	}
 
 	public String getUsername()

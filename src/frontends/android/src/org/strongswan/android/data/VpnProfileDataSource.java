@@ -36,10 +36,13 @@ public class VpnProfileDataSource
 	public static final String KEY_NAME = "name";
 	public static final String KEY_GATEWAY = "gateway";
 	public static final String KEY_VPN_TYPE = "vpn_type";
+	public static final String KEY_TUN_FAMILY = "tun_family";
 	public static final String KEY_USERNAME = "username";
 	public static final String KEY_PASSWORD = "password";
 	public static final String KEY_CERTIFICATE = "certificate";
 	public static final String KEY_USER_CERTIFICATE = "user_certificate";
+
+	public static final String DEFAULT_TUN_FAMILY = "ipv4";
 
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDatabase;
@@ -48,7 +51,7 @@ public class VpnProfileDataSource
 	private static final String DATABASE_NAME = "strongswan.db";
 	private static final String TABLE_VPNPROFILE = "vpnprofile";
 
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 5;
 
 	public static final String DATABASE_CREATE =
 							"CREATE TABLE " + TABLE_VPNPROFILE + " (" +
@@ -56,6 +59,7 @@ public class VpnProfileDataSource
 								KEY_NAME + " TEXT NOT NULL," +
 								KEY_GATEWAY + " TEXT NOT NULL," +
 								KEY_VPN_TYPE + " TEXT NOT NULL," +
+								KEY_TUN_FAMILY + " TEXT NOT NULL," +
 								KEY_USERNAME + " TEXT," +
 								KEY_PASSWORD + " TEXT," +
 								KEY_CERTIFICATE + " TEXT," +
@@ -66,6 +70,7 @@ public class VpnProfileDataSource
 								KEY_NAME,
 								KEY_GATEWAY,
 								KEY_VPN_TYPE,
+								KEY_TUN_FAMILY,
 								KEY_USERNAME,
 								KEY_PASSWORD,
 								KEY_CERTIFICATE,
@@ -103,6 +108,11 @@ public class VpnProfileDataSource
 			if (oldVersion < 4)
 			{	/* remove NOT NULL constraint from username column */
 				updateColumns(db);
+			}
+			if (oldVersion < 5)
+			{
+				db.execSQL("ALTER TABLE " + TABLE_VPNPROFILE + " ADD " + KEY_TUN_FAMILY +
+						   " TEXT DEFAULT '" + DEFAULT_TUN_FAMILY + "';");
 			}
 		}
 
@@ -251,6 +261,7 @@ public class VpnProfileDataSource
 		profile.setName(cursor.getString(cursor.getColumnIndex(KEY_NAME)));
 		profile.setGateway(cursor.getString(cursor.getColumnIndex(KEY_GATEWAY)));
 		profile.setVpnType(VpnType.fromIdentifier(cursor.getString(cursor.getColumnIndex(KEY_VPN_TYPE))));
+		profile.setTunFamily(cursor.getString(cursor.getColumnIndex(KEY_TUN_FAMILY)));
 		profile.setUsername(cursor.getString(cursor.getColumnIndex(KEY_USERNAME)));
 		profile.setPassword(cursor.getString(cursor.getColumnIndex(KEY_PASSWORD)));
 		profile.setCertificateAlias(cursor.getString(cursor.getColumnIndex(KEY_CERTIFICATE)));
@@ -264,6 +275,7 @@ public class VpnProfileDataSource
 		values.put(KEY_NAME, profile.getName());
 		values.put(KEY_GATEWAY, profile.getGateway());
 		values.put(KEY_VPN_TYPE, profile.getVpnType().getIdentifier());
+		values.put(KEY_TUN_FAMILY, profile.getTunFamily());
 		values.put(KEY_USERNAME, profile.getUsername());
 		values.put(KEY_PASSWORD, profile.getPassword());
 		values.put(KEY_CERTIFICATE, profile.getCertificateAlias());
