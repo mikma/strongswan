@@ -57,6 +57,7 @@
     <string name="profile_tun_family">Tunnel family:</string>
     <string name="profile_tun_family_ipv4">IPv4</string>
     <string name="profile_tun_family_ipv6">IPv6</string>
+    <string name="profile_tun_family_ipv4_ipv6">IPv4 and IPv6</string>
     <string name="profile_username_label">Username:</string>
     <string name="profile_password_label">Password:</string>
     <string name="profile_password_hint">(prompt when needed)</string>

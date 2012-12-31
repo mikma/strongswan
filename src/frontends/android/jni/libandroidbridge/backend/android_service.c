@@ -37,6 +37,7 @@ typedef enum {
 	TUN_FAMILY_UNKNOWN = -1,
 	TUN_FAMILY_IPV4,
 	TUN_FAMILY_IPV6,
+	TUN_FAMILY_IPV4_IPV6,
 	TUN_FAMILY_NUM,
 } tun_family_t;
 
@@ -468,6 +469,21 @@ METHOD(listener_t, ike_reestablish, bool,
 	return TRUE;
 }
 
+static bool contains_family(tun_family_t tun_family, int sa_family)
+{
+	switch (sa_family)
+	{
+		case AF_INET:
+			return tun_family == TUN_FAMILY_IPV4 ||
+				tun_family == TUN_FAMILY_IPV4_IPV6;
+		case AF_INET6:
+			return tun_family == TUN_FAMILY_IPV6 ||
+				tun_family == TUN_FAMILY_IPV4_IPV6;
+		default:
+			return false;
+	}
+}
+
 static job_requeue_t initiate(private_android_service_t *this)
 {
 	identification_t *gateway, *user;
@@ -505,10 +521,10 @@ static job_requeue_t initiate(private_android_service_t *this)
 							   TRUE, FALSE, /* mobike, aggressive */
 							   0, 0, /* DPD delay, timeout */
 							   FALSE, NULL, NULL); /* mediation */
-	if (this->tun_family == TUN_FAMILY_IPV4)
+	if (contains_family(this->tun_family, AF_INET))
 		peer_cfg->add_virtual_ip(peer_cfg, host_create_any(AF_INET));
 
-	if (this->tun_family == TUN_FAMILY_IPV6)
+	if (contains_family(this->tun_family, AF_INET6))
 		peer_cfg->add_virtual_ip(peer_cfg, host_create_any(AF_INET6));
 
 	/* local auth config */
@@ -561,26 +577,20 @@ static job_requeue_t initiate(private_android_service_t *this)
 	 * libipsec, no PFS for now */
 	child_cfg->add_proposal(child_cfg, proposal_create_from_string(PROTO_ESP,
 							"aes128-aes192-aes256-sha1-sha256-sha384-sha512"));
-	if (this->tun_family == TUN_FAMILY_IPV4)
+	if (contains_family(this->tun_family, AF_INET))
 	{
 		ts = traffic_selector_create_from_string(0, TS_IPV4_ADDR_RANGE, "0.0.0.0",
 											 0, "255.255.255.255", 65535);
 		child_cfg->add_traffic_selector(child_cfg, TRUE, ts);
-	}
-	if (this->tun_family == TUN_FAMILY_IPV4)
-	{
 		ts = traffic_selector_create_from_string(0, TS_IPV4_ADDR_RANGE, "0.0.0.0",
 											 0, "255.255.255.255", 65535);
 		child_cfg->add_traffic_selector(child_cfg, FALSE, ts);
 	}
-	if (this->tun_family == TUN_FAMILY_IPV6)
+	if (contains_family(this->tun_family, AF_INET6))
 	{
 		ts = traffic_selector_create_from_string(0, TS_IPV6_ADDR_RANGE, "::",
 											 0, "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff", 65535);
 		child_cfg->add_traffic_selector(child_cfg, TRUE, ts);
-	}
-	if (this->tun_family == TUN_FAMILY_IPV6)
-	{
 		ts = traffic_selector_create_from_string(0, TS_IPV6_ADDR_RANGE, "::",
 											 0, "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff", 65535);
 		child_cfg->add_traffic_selector(child_cfg, FALSE, ts);
@@ -654,6 +664,10 @@ android_service_t *android_service_create(android_creds_t *creds, char *type, ch
 	else if (streq(tun_family, "ipv6"))
 	{
 		family = TUN_FAMILY_IPV6;
+	}
+	else if (streq(tun_family, "ipv4+ipv6"))
+	{
+		family = TUN_FAMILY_IPV4_IPV6;
 	}
 	else
 	{
