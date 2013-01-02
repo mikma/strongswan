@@ -339,13 +339,13 @@ METHOD(charonservice_t, get_network_manager, network_manager_t*,
  * @param username			username (gets owned)
  * @param password			password (gets owned)
  */
-static void initiate(char *type, char *tun_family, char *gateway, char *username, char *password)
+static void initiate(char *type, char *tun_family, char *gateway, char *identity, char *username, char *password)
 {
 	private_charonservice_t *this = (private_charonservice_t*)charonservice;
 
 	this->creds->clear(this->creds);
 	DESTROY_IF(this->service);
-	this->service = android_service_create(this->creds, type, tun_family, gateway,
+	this->service = android_service_create(this->creds, type, tun_family, gateway, identity,
 										   username, password);
 }
 
@@ -571,15 +571,16 @@ JNI_METHOD(CharonVpnService, deinitializeCharon, void)
  * Initiate SA
  */
 JNI_METHOD(CharonVpnService, initiate, void,
-	jstring jtype, jstring jtun_family, jstring jgateway, jstring jusername, jstring jpassword)
+	jstring jtype, jstring jtun_family, jstring jgateway, jstring jidentity, jstring jusername, jstring jpassword)
 {
-	char *type, *tun_family, *gateway, *username, *password;
+	char *type, *tun_family, *gateway, *identity, *username, *password;
 
 	type = androidjni_convert_jstring(env, jtype);
 	tun_family = androidjni_convert_jstring(env, jtun_family);
 	gateway = androidjni_convert_jstring(env, jgateway);
+	identity = androidjni_convert_jstring(env, jidentity);
 	username = androidjni_convert_jstring(env, jusername);
 	password = androidjni_convert_jstring(env, jpassword);
 
-	initiate(type, tun_family, gateway, username, password);
+	initiate(type, tun_family, gateway, identity, username, password);
 }

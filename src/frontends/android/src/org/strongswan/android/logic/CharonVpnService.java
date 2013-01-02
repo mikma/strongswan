@@ -18,6 +18,9 @@
 package org.strongswan.android.logic;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
@@ -213,12 +216,29 @@ public class CharonVpnService extends VpnService implements Runnable
 						BuilderAdapter builder = new BuilderAdapter(mCurrentProfile.getName());
 						initializeCharon(builder, mLogFile);
 						Log.i(TAG, "charon started");
+						InetAddress[] allAddrs = InetAddress.getAllByName(mCurrentProfile.getGateway());
+						InetAddress addr = null;
+
+						for (int i=0; i < allAddrs.length; i++) {
+							if (allAddrs[i] instanceof Inet4Address) {
+								addr = allAddrs[i];
+								break;
+							}
+						}
+						if (addr == null) {
+							throw new UnknownHostException(mCurrentProfile.getGateway());
+						}
 
 						initiate(mCurrentProfile.getVpnType().getIdentifier(),
-							 mCurrentProfile.getTunFamily(),
-								 mCurrentProfile.getGateway(), mCurrentProfile.getUsername(),
+								 mCurrentProfile.getTunFamily(),
+								 addr.getHostAddress(), mCurrentProfile.getGateway(), mCurrentProfile.getUsername(),
 								 mCurrentProfile.getPassword());
 					}
+				}
+				catch (UnknownHostException ex)
+				{
+					stopCurrentConnection();
+					setState(State.DISABLED);
 				}
 				catch (InterruptedException ex)
 				{
@@ -473,7 +493,7 @@ public class CharonVpnService extends VpnService implements Runnable
 	/**
 	 * Initiate VPN, provided by libandroidbridge.so
 	 */
-	public native void initiate(String type, String tunFamily, String gateway, String username, String password);
+	public native void initiate(String type, String tunFamily, String gateway, String identity, String username, String password);
 
 	/**
 	 * Adapter for VpnService.Builder which is used to access it safely via JNI.

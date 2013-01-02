@@ -58,7 +58,7 @@ struct android_service_t {
  * @param password				password (if any)
  */
 android_service_t *android_service_create(android_creds_t *creds, char *type, char *tun_family,
-										  char *gateway, char *username,
+										  char *gateway, char *identity, char *username,
 										  char *password);
 
 #endif /** ANDROID_SERVICE_H_ @}*/

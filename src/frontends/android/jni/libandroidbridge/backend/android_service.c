@@ -93,6 +93,11 @@ struct private_android_service_t {
 	char *gateway;
 
 	/**
+	 * remote identity
+	 */
+	char *identity;
+
+	/**
 	 * username
 	 */
 	char *username;
@@ -586,7 +591,7 @@ static job_requeue_t initiate(private_android_service_t *this)
 	/* remote auth config */
 	auth = auth_cfg_create();
 	auth->add(auth, AUTH_RULE_AUTH_CLASS, AUTH_CLASS_PUBKEY);
-	gateway = identification_create_from_string(this->gateway);
+	gateway = identification_create_from_string(this->identity);
 	auth->add(auth, AUTH_RULE_IDENTITY, gateway);
 	auth->add(auth, AUTH_RULE_IDENTITY_LOOSE, TRUE);
 	peer_cfg->add_auth_cfg(peer_cfg, auth, FALSE);
@@ -659,6 +664,7 @@ METHOD(android_service_t, destroy, void,
 	this->lock->destroy(this->lock);
 	free(this->type);
 	free(this->gateway);
+	free(this->identity);
 	free(this->username);
 	if (this->password)
 	{
@@ -672,7 +678,7 @@ METHOD(android_service_t, destroy, void,
  * See header
  */
 android_service_t *android_service_create(android_creds_t *creds, char *type, char *tun_family,
-										  char *gateway, char *username,
+										  char *gateway, char *identity, char *username,
 										  char *password)
 {
 	private_android_service_t *this;
@@ -713,6 +719,7 @@ android_service_t *android_service_create(android_creds_t *creds, char *type, ch
 		.username = username,
 		.password = password,
 		.gateway = gateway,
+		.identity = identity,
 		.creds = creds,
 		.type = type,
 		.tunfd = -1,
