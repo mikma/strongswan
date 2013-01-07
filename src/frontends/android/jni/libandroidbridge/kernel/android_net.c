@@ -108,6 +108,14 @@ METHOD(kernel_net_t, destroy, void,
 	free(this);
 }
 
+METHOD(kernel_net_t, get_interface, bool,
+	private_kernel_android_net_t *this, host_t *host, char **name)
+{
+	static char dummy[] = "dummy";
+	*name = dummy;
+	return true;
+}
+
 /*
  * Described in header.
  */
@@ -120,7 +128,7 @@ kernel_android_net_t *kernel_android_net_create()
 			.interface = {
 				.get_source_addr = _get_source_addr,
 				.get_nexthop = (void*)return_null,
-				.get_interface = (void*)return_null,
+				.get_interface = _get_interface,
 				.create_address_enumerator = (void*)enumerator_create_empty,
 				.add_ip = _add_ip,
 				.del_ip = (void*)return_failed,
