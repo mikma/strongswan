@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 # copy-n-paste from Makefile.am
-LOCAL_SRC_FILES := \
+local_src_files := \
 android_jni.c android_jni.h \
 backend/android_attr.c backend/android_attr.h \
 backend/android_creds.c backend/android_creds.h \
@@ -13,6 +13,8 @@ kernel/android_ipsec.c kernel/android_ipsec.h \
 kernel/android_net.c kernel/android_net.h \
 kernel/network_manager.c kernel/network_manager.h \
 vpnservice_builder.c vpnservice_builder.h
+
+LOCAL_SRC_FILES := $(filter %.c,$(local_src_files))
 
 # build libandroidbridge -------------------------------------------------------
 

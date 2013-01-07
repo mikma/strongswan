@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 # copy-n-paste from Makefile.am
-LOCAL_SRC_FILES := \
+local_src_files := \
 hydra.c hydra.h \
 attributes/attributes.c attributes/attributes.h \
 attributes/attribute_provider.h attributes/attribute_handler.h \
@@ -15,11 +15,11 @@ kernel/kernel_listener.h
 
 # adding the plugin source files
 
-LOCAL_SRC_FILES += $(call add_plugin, attr)
+local_src_files += $(call add_plugin, attr)
 
-LOCAL_SRC_FILES += $(call add_plugin, kernel-pfkey)
+local_src_files += $(call add_plugin, kernel-pfkey)
 
-LOCAL_SRC_FILES += $(call add_plugin, kernel-netlink)
+local_src_files += $(call add_plugin, kernel-netlink)
 
 # build libhydra ---------------------------------------------------------------
 
@@ -27,6 +27,8 @@ LOCAL_C_INCLUDES += \
 	$(libvstr_PATH) \
 	$(strongswan_PATH)/src/include \
 	$(strongswan_PATH)/src/libstrongswan
+
+LOCAL_SRC_FILES := $(filter %.c,$(local_src_files))
 
 LOCAL_CFLAGS := $(strongswan_CFLAGS)
 

@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 # copy-n-paste from Makefile.am
-LOCAL_SRC_FILES := \
+local_src_files := \
 ipsec.c ipsec.h \
 esp_context.c esp_context.h \
 esp_packet.c esp_packet.h \
@@ -21,6 +21,8 @@ LOCAL_C_INCLUDES += \
 	$(libvstr_PATH) \
 	$(strongswan_PATH)/src/include \
 	$(strongswan_PATH)/src/libstrongswan
+
+LOCAL_SRC_FILES := $(filter %.c,$(local_src_files))
 
 LOCAL_CFLAGS := $(strongswan_CFLAGS)
 

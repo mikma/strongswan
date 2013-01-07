@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 # copy-n-paste from Makefile.am
-LOCAL_SRC_FILES := \
+local_src_files := \
 bus/bus.c bus/bus.h \
 bus/listeners/listener.h \
 bus/listeners/logger.h \
@@ -76,7 +76,7 @@ sa/shunt_manager.c sa/shunt_manager.h \
 sa/trap_manager.c sa/trap_manager.h \
 sa/task.c sa/task.h
 
-LOCAL_SRC_FILES += \
+local_src_files += \
 sa/ikev2/keymat_v2.c sa/ikev2/keymat_v2.h \
 sa/ikev2/task_manager_v2.c sa/ikev2/task_manager_v2.h \
 sa/ikev2/authenticators/eap_authenticator.c sa/ikev2/authenticators/eap_authenticator.h \
@@ -99,7 +99,7 @@ sa/ikev2/tasks/ike_reauth.c sa/ikev2/tasks/ike_reauth.h \
 sa/ikev2/tasks/ike_auth_lifetime.c sa/ikev2/tasks/ike_auth_lifetime.h \
 sa/ikev2/tasks/ike_vendor.c sa/ikev2/tasks/ike_vendor.h
 
-LOCAL_SRC_FILES += \
+local_src_files += \
 sa/ikev1/keymat_v1.c sa/ikev1/keymat_v1.h \
 sa/ikev1/task_manager_v1.c sa/ikev1/task_manager_v1.h \
 sa/ikev1/authenticators/psk_v1_authenticator.c sa/ikev1/authenticators/psk_v1_authenticator.h \
@@ -124,49 +124,49 @@ processing/jobs/adopt_children_job.c processing/jobs/adopt_children_job.h
 
 # adding the plugin source files
 
-LOCAL_SRC_FILES += $(call add_plugin, android)
+local_src_files += $(call add_plugin, android)
 ifneq ($(call plugin_enabled, android),)
 LOCAL_C_INCLUDES += frameworks/base/cmds/keystore
 LOCAL_SHARED_LIBRARIES += libcutils
 endif
 
-LOCAL_SRC_FILES += $(call add_plugin, android-log)
+local_src_files += $(call add_plugin, android-log)
 ifneq ($(call plugin_enabled, android-log),)
 LOCAL_LDLIBS += -llog
 endif
 
-LOCAL_SRC_FILES += $(call add_plugin, attr)
+local_src_files += $(call add_plugin, attr)
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-aka)
+local_src_files += $(call add_plugin, eap-aka)
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-aka-3gpp2)
+local_src_files += $(call add_plugin, eap-aka-3gpp2)
 ifneq ($(call plugin_enabled, eap-aka-3gpp2),)
 LOCAL_C_INCLUDES += $(libgmp_PATH)
 LOCAL_SHARED_LIBRARIES += libgmp
 endif
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-gtc)
+local_src_files += $(call add_plugin, eap-gtc)
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-identity)
+local_src_files += $(call add_plugin, eap-identity)
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-md5)
+local_src_files += $(call add_plugin, eap-md5)
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-mschapv2)
+local_src_files += $(call add_plugin, eap-mschapv2)
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-sim)
+local_src_files += $(call add_plugin, eap-sim)
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-simaka-sql)
+local_src_files += $(call add_plugin, eap-simaka-sql)
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-simaka-pseudonym)
+local_src_files += $(call add_plugin, eap-simaka-pseudonym)
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-simaka-reauth)
+local_src_files += $(call add_plugin, eap-simaka-reauth)
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-sim-file)
+local_src_files += $(call add_plugin, eap-sim-file)
 
 # adding libakasim if either eap-aka or eap-sim is enabled
 ifneq ($(or $(call plugin_enabled, eap-aka), $(call plugin_enabled, eap-sim)),)
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../libsimaka/
-LOCAL_SRC_FILES += $(addprefix ../libsimaka/, \
+local_src_files += $(addprefix ../libsimaka/, \
 		simaka_message.h simaka_message.c \
 		simaka_crypto.h simaka_crypto.c \
 		simaka_manager.h simaka_manager.c \
@@ -174,33 +174,33 @@ LOCAL_SRC_FILES += $(addprefix ../libsimaka/, \
 	)
 endif
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-tls)
+local_src_files += $(call add_plugin, eap-tls)
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-ttls)
+local_src_files += $(call add_plugin, eap-ttls)
 ifneq ($(call plugin_enabled, eap-ttls),)
 # for radius_message.h
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../libradius/
 endif
 
-LOCAL_SRC_FILES += $(call add_plugin, eap-peap)
+local_src_files += $(call add_plugin, eap-peap)
 
 # adding libtls if any of the three plugins above is enabled
 ifneq ($(or $(call plugin_enabled, eap-tls), $(call plugin_enabled, eap-ttls), $(call plugin_enabled, eap-peap)),)
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../libtls/
-LOCAL_SRC_FILES += $(addprefix ../libtls/, \
+local_src_files += $(addprefix ../libtls/, \
 		tls_protection.c tls_compression.c tls_fragmentation.c tls_alert.c \
 		tls_crypto.c tls_prf.c tls_socket.c tls_eap.c tls_cache.c tls_peer.c \
 		tls_server.c tls.c \
 	)
 endif
 
-LOCAL_SRC_FILES += $(call add_plugin, load-tester)
+local_src_files += $(call add_plugin, load-tester)
 
-LOCAL_SRC_FILES += $(call add_plugin, socket-default)
+local_src_files += $(call add_plugin, socket-default)
 
-LOCAL_SRC_FILES += $(call add_plugin, socket-dynamic)
+local_src_files += $(call add_plugin, socket-dynamic)
 
-LOCAL_SRC_FILES += $(call add_plugin, stroke)
+local_src_files += $(call add_plugin, stroke)
 ifneq ($(call plugin_enabled, stroke),)
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../stroke/
 endif
@@ -214,6 +214,8 @@ LOCAL_C_INCLUDES += \
 	$(strongswan_PATH)/src/libhydra \
 	$(strongswan_PATH)/src/libstrongswan \
 	$(strongswan_PATH)/src/libtncif
+
+LOCAL_SRC_FILES := $(filter %.c,$(local_src_files))
 
 LOCAL_CFLAGS := $(strongswan_CFLAGS)
 
