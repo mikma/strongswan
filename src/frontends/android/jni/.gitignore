@@ -1,3 +1,4 @@
+android-*-toolchain/
 openssl
 strongswan
 vstr/libvstr.a
