@@ -1326,6 +1326,7 @@ AC_OUTPUT(
 	src/medsrv/Makefile
 	src/checksum/Makefile
 	src/conftest/Makefile
+	src/frontends/android/Makefile
 	scripts/Makefile
 	testing/Makefile
 )
