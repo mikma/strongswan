@@ -11,7 +11,7 @@ include $(LOCAL_PATH)/strongswan/Android.common.mk
 
 # includes
 strongswan_PATH := $(LOCAL_PATH)/strongswan
-libvstr_PATH := $(LOCAL_PATH)/vstr/include
+libvstr_PATH := $(LOCAL_PATH)/vstr/$(TARGET_ARCH)/include
 openssl_PATH := $(LOCAL_PATH)/openssl/include
 
 # CFLAGS (partially from a configure run using droid-gcc)
