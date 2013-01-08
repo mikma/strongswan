@@ -10,7 +10,7 @@ strongswan_PLUGINS := $(strongswan_CHARON_PLUGINS)
 strongswan_PATH := $(LOCAL_PATH)/../../../../../strongswan
 
 # includes
-libvstr_PATH := $(LOCAL_PATH)/vstr/include
+libvstr_PATH := $(LOCAL_PATH)/vstr/$(TARGET_ARCH)/include
 openssl_PATH := $(LOCAL_PATH)/openssl/include
 
 include $(strongswan_PATH)/Android.common.mk
