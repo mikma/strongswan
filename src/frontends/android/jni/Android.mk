@@ -7,12 +7,13 @@ strongswan_CHARON_PLUGINS := android-log openssl fips-prf random nonce pubkey \
 
 strongswan_PLUGINS := $(strongswan_CHARON_PLUGINS)
 
-include $(LOCAL_PATH)/strongswan/Android.common.mk
+strongswan_PATH := $(LOCAL_PATH)/../../../../../strongswan
 
 # includes
-strongswan_PATH := $(LOCAL_PATH)/strongswan
 libvstr_PATH := $(LOCAL_PATH)/vstr/include
 openssl_PATH := $(LOCAL_PATH)/openssl/include
+
+include $(strongswan_PATH)/Android.common.mk
 
 # CFLAGS (partially from a configure run using droid-gcc)
 strongswan_CFLAGS := \
@@ -61,8 +62,11 @@ include $(addprefix $(LOCAL_PATH)/,$(addsuffix /Android.mk, \
 		vstr \
 		openssl \
 		libandroidbridge \
-		strongswan/src/libipsec \
-		strongswan/src/libcharon \
-		strongswan/src/libhydra \
-		strongswan/src/libstrongswan \
+))
+
+include $(addprefix $(strongswan_PATH)/,$(addsuffix /Android.mk, \
+		src/libipsec \
+		src/libcharon \
+		src/libhydra \
+		src/libstrongswan \
 ))
