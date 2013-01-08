@@ -1,0 +1,10 @@
+#!/bin/sh
+
+project=$1
+keystore=google-play/release.keystore
+
+jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore $keystore bin/$project-release-unsigned.apk androidreleasekey || exit 1
+cp bin/$project-release-unsigned.apk bin/$project-release-unaligned.apk
+
+rm -f bin/$project-release.apk
+zipalign -v 4 bin/$project-release-unaligned.apk bin/$project-release.apk

@@ -28,11 +28,17 @@ native:
 debug: native build.xml
 	ant debug
 
+install-debug: debug
+	adb install -r bin/$(PACKAGE_NAME)-debug.apk
+
 release: native build.xml
 	ant release
 
-install-debug: debug
-	adb install -r bin/$(PACKAGE_NAME)-debug.apk
+sign: 
+	tools/sign-release $(PACKAGE_NAME)
+
+install-release: release sign
+	adb install -r bin/$(PACKAGE_NAME)-release.apk
 
 #
 # Icons built from icon.svg
