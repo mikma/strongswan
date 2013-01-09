@@ -1,5 +1,7 @@
 #!/bin/bash
-
+#
+# Usage: ./vstr.build [arm|x86]
+#
 ARCH=${1:-arm}
 
 script_dir=`dirname $0`
