@@ -1,14 +1,29 @@
 #!/bin/bash
 
+ARCH=${1:-arm}
+
 script_dir=`dirname $0`
-INSTALLDIR=`cd ${script_dir}; pwd`/vstr
+INSTALLDIR=`cd ${script_dir}; pwd`/vstr/$ARCH
 PLATFORM=android-14
-TOOLCHAIN=`pwd`/../$PLATFORM-toolchain
+TOOLCHAIN=`pwd`/../$PLATFORM-$ARCH-toolchain
 BUILD=`./config.guess`
+
+case $ARCH in
+    arm)
+	HOST=arm-linux-androideabi
+	;;
+    x86)
+	HOST=i686-linux-android
+	;;
+    *)
+	echo Unknown arch: $ARCH
+	exit 1
+	;;
+esac
 
 OPTIONS="\
   --build=$BUILD \
-  --host=arm-linux-androideabi \
+  --host=$HOST \
   --disable-shared \
   "
 
@@ -56,20 +71,26 @@ export local_cv_has___typeof=yes
 # build a standalone toolchain
 if [ ! -d $TOOLCHAIN ]; then
 	$NDK_ROOT/build/tools/make-standalone-toolchain.sh \
-		--platform=$PLATFORM --install-dir=$TOOLCHAIN
+		--platform=$PLATFORM --install-dir=$TOOLCHAIN --arch=$ARCH
 fi
 
 export PATH=$TOOLCHAIN/bin:$PATH
-CFLAGS="-DUSE_RESTRICTED_HEADERS -Wall -O2" \
-./configure ${OPTIONS}
+mkdir -p obj-$ARCH
+pushd obj-$ARCH
+if [ ! -e config.status ]; then
+    CFLAGS="-DUSE_RESTRICTED_HEADERS -Wall -O2" \
+	../configure ${OPTIONS}
+fi
 make
+popd
 
 mkdir -p ${INSTALLDIR}
-cp src/.libs/libvstr.a ${INSTALLDIR}
+cp obj-$ARCH/src/.libs/libvstr.a ${INSTALLDIR}
 
 mkdir -p ${INSTALLDIR}/include
 pushd include
-cp vstr-arch.h vstr-conf.h vstr-const.h vstr-def.h vstr-extern.h \
+cp vstr-arch.h vstr-const.h vstr-def.h vstr-extern.h \
    vstr.h vstr-inline.h vstr-switch.h ${INSTALLDIR}/include
 popd
+cp obj-$ARCH/include/vstr-conf.h ${INSTALLDIR}/include
 
