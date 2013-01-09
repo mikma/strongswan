@@ -111,8 +111,7 @@ METHOD(kernel_net_t, destroy, void,
 METHOD(kernel_net_t, get_interface, bool,
 	private_kernel_android_net_t *this, host_t *host, char **name)
 {
-	static char dummy[] = "dummy";
-	*name = dummy;
+	*name = strdup("dummy");
 	return true;
 }
 
