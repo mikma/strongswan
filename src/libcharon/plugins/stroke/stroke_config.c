@@ -233,7 +233,8 @@ static ike_cfg_t *build_ike_cfg(private_stroke_config_t *this, stroke_msg_t *msg
 							 ikeport,
 							 msg->add_conn.other.address,
 							 msg->add_conn.other.allow_any,
-							 msg->add_conn.other.ikeport);
+							 msg->add_conn.other.ikeport,
+							 msg->add_conn.fragmentation);
 	add_proposals(this, msg->add_conn.algorithms.ike, ike_cfg, NULL);
 	return ike_cfg;
 }
@@ -413,7 +414,7 @@ static auth_cfg_t *build_auth_cfg(private_stroke_config_t *this,
 			ca = other_end->ca2;
 		}
 	}
-	if (id && *id == '%' && !streq(id, "%any"))
+	if (id && *id == '%' && !streq(id, "%any") && !streq(id, "%any6"))
 	{	/* has only an effect on rightid/2 */
 		loose = !local;
 		id++;
@@ -442,7 +443,7 @@ static auth_cfg_t *build_auth_cfg(private_stroke_config_t *this,
 
 	cfg = auth_cfg_create();
 
-	/* add identity and peer certifcate */
+	/* add identity and peer certificate */
 	identity = identification_create_from_string(id);
 	if (cert)
 	{
@@ -1311,4 +1312,3 @@ stroke_config_t *stroke_config_create(stroke_ca_t *ca, stroke_cred_t *cred,
 
 	return &this->public;
 }
-
