@@ -3,4 +3,5 @@ openssl
 strongswan
 vstr/x86
 vstr/arm
+vstr/mips
 vstr-*/
