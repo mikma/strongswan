@@ -115,13 +115,6 @@ METHOD(kernel_net_t, destroy, void,
 	free(this);
 }
 
-METHOD(kernel_net_t, get_interface, bool,
-	private_kernel_android_net_t *this, host_t *host, char **name)
-{
-	*name = strdup("dummy");
-	return true;
-}
-
 /*
  * Described in header.
  */
