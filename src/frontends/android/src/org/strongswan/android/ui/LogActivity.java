@@ -74,7 +74,7 @@ public class LogActivity extends Activity
 				}
 
 				Intent intent = new Intent(Intent.ACTION_SEND);
-				intent.putExtra(Intent.EXTRA_EMAIL, new String[] { MainActivity.CONTACT_EMAIL });
+				intent.putExtra(Intent.EXTRA_EMAIL, new String[] { getString(MainActivity.CONTACT_EMAIL) });
 				intent.putExtra(Intent.EXTRA_SUBJECT, String.format(getString(R.string.log_mail_subject), version));
 				intent.setType("text/plain");
 				intent.putExtra(Intent.EXTRA_STREAM, LogContentProvider.createContentUri());

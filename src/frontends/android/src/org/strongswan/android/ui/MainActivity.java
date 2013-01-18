@@ -55,7 +55,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnVpnProfileSelectedListener
 {
-	public static final String CONTACT_EMAIL = "android@strongswan.org";
+	public static final int CONTACT_EMAIL = R.string.contact_email;
 	public static final String START_PROFILE = "org.strongswan.android.action.START_PROFILE";
 	public static final String EXTRA_VPN_PROFILE_ID = "org.strongswan.android.VPN_PROFILE_ID";
 	/** Use "bring your own device" (BYOD) features */
