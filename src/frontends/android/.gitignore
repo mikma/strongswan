@@ -1,4 +1,6 @@
 bin/
 gen/
+google-play/icon.png
 libs/
 obj/
+res/drawable-*/ic_launcher.png
