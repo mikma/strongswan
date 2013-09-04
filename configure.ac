@@ -1479,6 +1479,7 @@ AC_CONFIG_FILES([
 	src/checksum/Makefile
 	src/conftest/Makefile
 	src/pt-tls-client/Makefile
+	src/frontends/android/Makefile
 	scripts/Makefile
 	testing/Makefile
 ])
