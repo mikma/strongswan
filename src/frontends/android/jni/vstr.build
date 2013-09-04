@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Usage: ./vstr.build [arm|x86]
+# Usage: ./vstr.build [arm|x86|mips]
 #
 ARCH=${1:-arm}
 
@@ -16,6 +16,9 @@ case $ARCH in
 	;;
     x86)
 	HOST=i686-linux-android
+	;;
+    mips)
+	HOST=mipsel-linux-android
 	;;
     *)
 	echo Unknown arch: $ARCH
